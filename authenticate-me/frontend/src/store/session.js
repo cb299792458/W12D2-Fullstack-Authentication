@@ -8,9 +8,8 @@ export const setUser = (user) => ({
     user
 })
 
-export const removeUser = (userId) => ({
-    type: REMOVE_USER,
-    userId
+export const removeUser = () => ({
+    type: REMOVE_USER
 })
 
 export const loginUser = user => async dispatch => {
@@ -33,9 +32,17 @@ const sessionReducer = (state = {}, action) => {
     // const nextState = {...state}
     switch(action.type) {
         case SET_USER:
-            // nextState[action.user.id] = action.user;
-            return {[action.user.id]: action.user}
+            // nextState["user"] = action.user;
+            return { ...state, user: action.user };
+            // return nextState;
+        case REMOVE_USER:
+            // const nextState = {...state};
+            // delete nextState[action.userId];
+            // return nextState;
+            return {...state, user: null}
         default:
             return state
     }
 }
+
+export default sessionReducer;
