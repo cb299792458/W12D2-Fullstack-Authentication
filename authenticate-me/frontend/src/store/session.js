@@ -18,7 +18,19 @@ export const loginUser = user => async dispatch => {
         body: JSON.stringify(user)
     })
     let data = await res.json();
-    dispatch(setUser(data.user))
+    
+    // console.log( data, "this is data")
+
+    // console.log( res, "this is res")
+
+    if(!data.errors){
+        console.log('res ok')
+        dispatch(setUser(data.user));
+        return res;
+    } else {
+        console.log('res not ok')
+        throw data;
+    }
 }
 
 export const logoutUser = userId => async dispatch => {
@@ -26,6 +38,7 @@ export const logoutUser = userId => async dispatch => {
         method: 'DELETE'
     })
     dispatch(removeUser(userId))
+    return res;
 }
 
 const sessionReducer = (state = {}, action) => {
