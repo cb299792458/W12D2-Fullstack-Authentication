@@ -15,7 +15,6 @@ const csrfFetch = async function(url, options = {}) {
     return res;
 }
 
-export default csrfFetch;
 
 export const restoreCSRF = async () => {
     const res = await csrfFetch('/api/session');
@@ -31,3 +30,5 @@ export const storeCSRFToken = (Response) => {
         sessionStorage.setItem('X-CSRF-Token', token);
     }
 }
+
+export default csrfFetch;
