@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux"
 import { Redirect } from "react-router-dom/cjs/react-router-dom.min";
 import { loginUser } from "../../store/session";
-
+import './LoginForm.css'
 
 const LoginFormPage = () => {
     
