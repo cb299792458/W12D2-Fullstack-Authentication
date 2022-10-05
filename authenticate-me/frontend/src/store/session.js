@@ -1,4 +1,4 @@
-import csrfFetch from "./csrf"
+import csrfFetch, { storeCSRFToken } from "./csrf"
 
 export const SET_USER = '/api/session'
 export const REMOVE_USER = '/api/session'
@@ -19,10 +19,6 @@ export const loginUser = user => async dispatch => {
     })
     let data = await res.json();
     
-    // console.log( data, "this is data")
-
-    // console.log( res, "this is res")
-
     if(!data.errors){
         console.log('res ok')
         dispatch(setUser(data.user));
@@ -40,8 +36,22 @@ export const logoutUser = userId => async dispatch => {
     dispatch(removeUser(userId))
     return res;
 }
+const storeCurrentUser = user => {
+    if (user) {
+        const data = JSON.stringify(user)
+        sessionStorage.setItem('currentUser', data)
+    } else sessionStorage.removeItem('currentUser')
+}
 
-const sessionReducer = (state = {}, action) => {
+export const restoreSession = () => async dispatch => {
+    const res = await csrfFetch(SET_USER)
+    storeCSRFToken(res)
+    const data = await res.json()
+    storeCurrentUser(data.user)
+    dispatch(setUser(data.user))
+}
+
+const sessionReducer = (state = initialState, action) => {
     // const nextState = {...state}
     switch(action.type) {
         case SET_USER:
@@ -56,6 +66,10 @@ const sessionReducer = (state = {}, action) => {
         default:
             return state
     }
+}
+
+const initialState = {
+    user: JSON.parse(sessionStorage.getItem('currentUser'))
 }
 
 export default sessionReducer;
