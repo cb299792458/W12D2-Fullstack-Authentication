@@ -21,6 +21,7 @@ const LoginFormPage = () => {
 
         return dispatch(loginUser(user))
             .catch(async (data) => {
+                console.log(data)
                 setErrors(data.errors);
 
                 // console.log(data);

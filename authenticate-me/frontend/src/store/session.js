@@ -24,16 +24,16 @@ export const signUpUser = user => async dispatch => {
         body: JSON.stringify(user)
     })
     
-    // if(res.ok){
-        let data = await res.json();
+    let data = await res.json();
+
+    if(!data.errors){
         storeCurrentUser(data.user);
         dispatch(createUser(data.user));
         dispatch(setUser(data.user));
-
         return res;
-    // } else {
-
-    // }
+    } else {
+        throw data;
+    }
 
 }
 
@@ -49,7 +49,6 @@ export const loginUser = user => async dispatch => {
         dispatch(setUser(data.user));
         return res;
     } else {
-        // console.log('res not ok')
         throw data;
     }
 }
@@ -58,6 +57,7 @@ export const logoutUser = userId => async dispatch => {
     const res = await csrfFetch(REMOVE_USER, {
         method: 'DELETE'
     })
+    storeCurrentUser(null)
     dispatch(removeUser(userId))
     return res;
 }

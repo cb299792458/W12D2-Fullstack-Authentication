@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
+import { Redirect } from "react-router-dom/cjs/react-router-dom.min";
 import { signUpUser } from "../../store/session";
 
 const SignUpForm = () => {
@@ -22,8 +23,11 @@ const SignUpForm = () => {
     }
     const handleSubmit = (e) => {
         e.preventDefault();
-
-        return dispatch(signUpUser(user)) // catch errors later
+        setErrors([])
+        return dispatch(signUpUser(user))
+            .catch(async (data) => {
+            setErrors(data.errors)
+        }) // catch errors later
 
     }
 
@@ -31,8 +35,11 @@ const SignUpForm = () => {
         <>
             <h1>Sign Up</h1>
             <ul>
-                
-
+                {errors.map(error => {
+                    return (
+                        <li key={error}>{error}</li>
+                    )
+                })}
             </ul>
 
             <form onSubmit={handleSubmit}>
