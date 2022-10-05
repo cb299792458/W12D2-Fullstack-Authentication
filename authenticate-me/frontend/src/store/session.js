@@ -2,6 +2,7 @@ import csrfFetch, { storeCSRFToken } from "./csrf"
 
 export const SET_USER = '/api/session'
 export const REMOVE_USER = '/api/session'
+export const CREATE_USER = '/api/users'
 
 export const setUser = (user) => ({
     type: SET_USER,
@@ -12,6 +13,30 @@ export const removeUser = () => ({
     type: REMOVE_USER
 })
 
+export const createUser = (user) => ({
+    type: CREATE_USER,
+    user
+})
+
+export const signUpUser = user => async dispatch => {
+    const res = await csrfFetch(CREATE_USER, {
+        method: 'POST',
+        body: JSON.stringify(user)
+    })
+    
+    // if(res.ok){
+        let data = await res.json();
+        storeCurrentUser(data.user);
+        dispatch(createUser(data.user));
+        dispatch(setUser(data.user));
+
+        return res;
+    // } else {
+
+    // }
+
+}
+
 export const loginUser = user => async dispatch => {
     const res = await csrfFetch(SET_USER, {
         method: 'POST',
@@ -20,11 +45,11 @@ export const loginUser = user => async dispatch => {
     let data = await res.json();
     
     if(!data.errors){
-        console.log('res ok')
+        // console.log('res ok')
         dispatch(setUser(data.user));
         return res;
     } else {
-        console.log('res not ok')
+        // console.log('res not ok')
         throw data;
     }
 }
